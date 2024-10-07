@@ -1,0 +1,290 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: #e59312;
+    background-size: 500%;
+
+    padding: 2vh 2vw;
+    /* max-width: 100vw; */
+}
+
+@keyframes bg-transition {
+    0% {background-position: left;}
+    100% {background-position: right;}
+}
+
+.mart-logo {
+    /* aspect-ratio: 1920/1080; */
+    transform: scale(100%);
+    max-width: 150px;
+    max-height: 120px;
+}
+header .mart-logo {
+    width: 20%;
+}
+
+.search{
+    max-width: 80%;
+    height: 2.2em;
+    background-color: rgb(255, 255, 255);
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    margin-right: 10px;
+}
+
+.search > i {
+    font-size: 10px;
+    color: rgb(82, 82, 82);
+}
+
+.search > input{
+    /* flex: 1; */
+    width: 100%;
+    height: 20px;
+    border: none;
+    outline: none;
+    font-size: .9rem;
+    padding-left: 10px;
+}
+
+.login-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn {
+    padding: .5em .7em;
+
+    outline: none;
+    color: #fedd2b;
+    font-size: .98rem;
+
+    background-color: black;
+    border-radius: 9px;
+    box-shadow: 0 0 1.2px hsl(0, 0%, 80%);
+    text-shadow: 0 0 .5px hsl(0, 0%, 80%);
+
+    transition: 200ms;
+    cursor: pointer;
+}
+
+.login:hover {
+    border-width: 3px;
+    background-color: transparent;
+    color: black;
+    font-weight: 1000;
+}
+
+.login:active {
+    scale: 95%;
+}
+
+.signup {
+    background-color: #000000;
+}
+
+.signup:hover {
+    border-width: 3px;
+    background-color: transparent;
+    color: black;
+    font-weight: 1000;
+}
+
+.signup:active{
+    scale: 95%;
+    background-color: #F27F0C;
+}
+
+.cart {
+    aspect-ratio: 1/1;
+    width: 2.3em;
+    transition: 200ms;
+}
+.cart:active {
+    transform: translateX(7px);
+}
+
+
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+
+    padding: 6vw;
+}
+
+.item-box {
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, .25);
+    border-radius: 7px;
+    aspect-ratio: 1/1.7;
+
+    transition: 80ms ease-out;
+}
+.item-box:hover {
+    box-shadow: 0 0 15px rgba(79, 128, 226, .3);
+}
+.item-box:active {
+    scale: 98%;
+}
+
+.item-img {
+    height: 47%;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    background-size: cover;
+    background-position: center;
+    
+    border-radius: 7px 7px 0 0;
+}
+
+#Mouse-1 .item-img {
+    background-image: url("products images/Logitech\ wireless\ mouse.jpg");
+}
+#Laptop-1 .item-img {
+    background-image: url("products images/NVIDIA_RTX_4090_Founders_Edition_-_Verpackung_\(ZMASLO\).png");
+}
+#Keyboard-1 .item-img {
+    background-image: url("products images/paul-esch-laurent-a-L0mmyCqcY-unsplash.jpg");
+}
+
+#Monitor-1 .item-img{
+    background-image: url("products images/Monitor\ MSI\ Optix\ G241VC.png");
+}
+
+#Headphone-1 .item-img {
+    background-image: url("products images/headset\ logitech\ pro\ gaming.jpg");
+}
+
+.item-txt {
+    padding: 10%;
+    height: 53%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.item-txt > div > p:nth-of-type(1) {
+    /* font-size: 1.1rem; */
+    font-size: 120%;
+    font-weight: 900;
+}
+.item-txt > div > p:nth-of-type(2) {
+    margin-top: .8em;
+    /* font-size: .9rem; */
+    font-size: 91%;
+    font-weight: lighter;
+    color: #515151;
+}
+.price {
+    text-align: end;
+    font-weight: bolder;
+    font-size: 100%;
+    color: #565656;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 3vw;
+
+    background-color: #053F5C;
+    color: white;
+}
+footer a{
+    color: white;
+    width: fit-content;
+}
+
+.ftr-txt {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(183px, 1fr));
+    grid-gap: 20px;
+    flex-grow: 2;
+}
+
+.ftr-txt a {
+    text-decoration: none;
+    position: relative;
+}
+.ftr-txt a::after {
+    /* width 0 --> 100 = left --> right */
+    /* scale 0 --> 1 = center --> edge */
+
+    content: '';
+    /* display: block; */
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    scale: 0;
+    transition: 200ms;
+}
+.ftr-txt a:hover::after {
+    scale: 100%;
+    color: black;
+    /* width: 100%; */
+}
+
+.ftr-section {
+    display: flex;
+    gap: 5px;
+}
+.ftr-logo{
+    width: 1.4em;
+}
+.ig {
+    display: flex;
+    flex-direction: column;
+    padding-left: 2.1em;
+}
+
+.wa div {
+    margin-top: 4px;
+    padding-left: 2.1em;
+}
+
+.company {
+    padding-left: 1.2em;
+}
+
+.ftr-img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: fit-content;
+}
+.ftr-img img {
+    transform: scale(70%);
+    max-width: 150px;
+}
+
+@media (max-width: 640px){
+    .btn {
+        aspect-ratio: 3/1;
+        font-size: small;
+    }
+}
