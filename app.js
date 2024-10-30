@@ -74,6 +74,7 @@ const cartButton = document.getElementsByClassName("cart");
 const logoutButton = document.getElementsByClassName("exit");
 const deadLinks = document.querySelectorAll(".dead-links");
 
+/*
 loginButton[0].addEventListener('click',() => {
     // console.log("Login Clicked");
     alert("Feature Coming Soon");
@@ -82,7 +83,7 @@ loginButton[0].addEventListener('click',() => {
 signupButton[0].addEventListener('click',() => {
     // console.log("Sign Up Clicked");
     alert("Feature Coming Soon");
-});
+}); */
 
 cartButton[0].addEventListener('click',() => {
     // console.log("Cart Clicked");
