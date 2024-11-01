@@ -1,0 +1,403 @@
+<?php
+    require_once 'session.php';
+    $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Guest';
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoltMart | Electronics Store</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href='https://css.gg/search.css' rel='stylesheet'>
+</head>
+
+<nav class="">
+    <div class="sidebar-top">
+        <div class="sidebar-img-back">
+            <svg xmlns="http://www.w3.org/2000/svg" id="sidebar-back" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="white" d="M20 11v2H8l5.5 5.5l-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5L8 11h12Z"/></svg>
+            <img src="mart.png" class="sidebar-logo">
+        </div>
+
+        <div class="search">
+            <i class="gg-search"></i>
+            <input type="text" id="nav-input" placeholder="search items...">
+        </div>
+
+        <div class="sidebar-links">
+            <a href="index.php">Home</a>
+            <a href="#products">Products</a>
+            <a href="editProducts.php">Edit products (admin only)</a>
+            <a href="products.php">Wishlists</a>
+            <a href="#" class="dead-links">Cart</a>
+            <a href="#" class="dead-links">History</a>
+            <a href="#contacts">Contact Us</a>
+        </div>
+    </div>
+    <div class="sidebar-exit">
+        <a href="https://www.google.com" class="exit">Exit / Logout</a>
+        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="1.5em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="white" d="M4 12a1 1 0 0 0 1 1h7.59l-2.3 2.29a1 1 0 0 0 0 1.42a1 1 0 0 0 1.42 0l4-4a1 1 0 0 0 .21-.33a1 1 0 0 0 0-.76a1 1 0 0 0-.21-.33l-4-4a1 1 0 1 0-1.42 1.42l2.3 2.29H5a1 1 0 0 0-1 1ZM17 2H7a3 3 0 0 0-3 3v3a1 1 0 0 0 2 0V5a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-3a1 1 0 0 0-2 0v3a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z"/></svg>
+    </div>
+</nav>
+
+<body>
+    <div class="header-transition">
+        <header>
+            <div class="header-left">
+                <!-- icon -->
+                <div class="hamburger-menu">
+                    <div class="hamburger"></div>
+                </div>
+                <!-- logo -->
+                <img src="mart.png" class="voltmart-logo">
+            </div>
+    
+    
+           <!-- searchbar --> <!--Tannia-->
+           <div class="search">
+            <i class="gg-search"></i>
+            <input type="text" id="header-input" placeholder="search items...">
+            </div>
+        
+            <!-- login/sign up -->
+            <div class="login-btn">
+                <!---
+                <button type="button" class="btn login">Log in</button>
+                <p><a href="login.html"></a></p>
+                <button type="button" class="btn signup">Sign up</button>
+                <p><a href="register.html"></a></p> -->
+
+                <a href="login.php" class="btn login">Log in</a>
+                <a href="register.php" class="btn signup">Sign up</a>
+                
+            <!-- cart -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="cart" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="white" d="M7 22q-.825 0-1.412-.587Q5 20.825 5 20q0-.825.588-1.413Q6.175 18 7 18t1.412.587Q9 19.175 9 20q0 .825-.588 1.413Q7.825 22 7 22Zm10 0q-.825 0-1.412-.587Q15 20.825 15 20q0-.825.588-1.413Q16.175 18 17 18t1.413.587Q19 19.175 19 20q0 .825-.587 1.413Q17.825 22 17 22ZM6.15 6l2.4 5h7l2.75-5ZM5.2 4h14.75q.575 0 .875.512q.3.513.025 1.038l-3.55 6.4q-.275.5-.738.775Q16.1 13 15.55 13H8.1L7 15h12v2H7q-1.125 0-1.7-.988q-.575-.987-.05-1.962L6.6 11.6L3 4H1V2h3.25Zm3.35 7h7Z"/></svg>
+            </div>
+        </header>
+    </div>
+
+    <!-- product showcase -->
+    <section class="product-showcase">
+        <p>Hello, <?php echo htmlspecialchars($username); ?>!</p>
+        <p>Let's shop With VoltMart</p> 
+        <video autoplay muted loop playsinline>
+            <source src="products images/Microsoft surface 5.mp4" type="video/mp4">
+            <!-- <source src="products images/Laptop commercial.mp4" type="video/mp4"> -->
+        </video>
+    </section>
+
+    <section class="main-store">
+        <!--carousel-->
+        <section>
+        <!--image slider start-->
+        <div class="slider">
+            <div class="slides">
+              <!--radio buttons start-->
+              <input type="radio" name="radio-btn" id="radio1">
+              <input type="radio" name="radio-btn" id="radio2">
+              <input type="radio" name="radio-btn" id="radio3">
+              <input type="radio" name="radio-btn" id="radio4">
+              <!--radio buttons end-->
+              <!--slide images start-->
+              <div class="slide first">
+                <!-- <img src="1.jpg" alt=""> -->
+              </div>
+              <div class="slide second">
+                <!-- <img src="2.jpg" alt=""> -->
+              </div>
+              <div class="slide third">
+                <!-- <img src="3.jpg" alt=""> -->
+              </div>
+              <div class="slide fourth">
+                <!-- <img src="4.jpg" alt=""> -->
+              </div>
+              <!--slide images end-->
+              <!--automatic navigation start-->
+              <div class="navigation-auto">
+                <div class="auto-btn1"></div>
+                <div class="auto-btn2"></div>
+                <div class="auto-btn3"></div>
+                <div class="auto-btn4"></div>
+              </div>
+              <!--automatic navigation end-->
+            </div>
+            <!--manual navigation start-->
+            <div class="navigation-manual">
+              <label for="radio1" class="manual-btn"></label>
+              <label for="radio2" class="manual-btn"></label>
+              <label for="radio3" class="manual-btn"></label>
+              <label for="radio4" class="manual-btn"></label>
+            </div>
+            <!--manual navigation end-->
+          </div>
+          <!--image slider end-->
+        </section>
+    
+        <!-- items -->
+        <section id="products">
+            <!-- featured -->
+            <p class="all-items featured">Featured Product</p>
+            <div class="featured-box featured">
+                <div class="item-img">
+                    <img src="products images/Microsoft surface 5.jpg" alt="Microsoft surface 5">
+
+                </div>
+                <div class="featured-txt">
+                    <div>
+                        <p>Microsoft Surface 5</p>
+                        <p>Sisa stok: 1</p>
+                    </div>
+                    <div class="pricing">
+                        <p class="discount">Rp 22.850.000,-</p>
+                        <p class="price">Rp 20.199.000,-</p>
+                    </div>
+                </div>
+            </div>
+            <!-- featured -->
+
+            <p class="all-items">ALL PRODUCTS</p>
+            <div class="items-grid"> 
+                <div class="item-box featured">
+                    <div class="item-img">
+                        <img src="products images/Microsoft surface 5.jpg" alt="Microsoft surface 5">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>Microsoft Surface 5</p>
+                            <p>Sisa stok: 1</p>
+                        </div>
+                        <p class="price" style="color: hsla(33, 100%, 50%, .96);">Rp 20.199.000,-</p>
+                    </div>
+                </div>
+                <div class="item-box">
+                    <div class="item-img">
+                        <img src="products images/Logitech wireless mouse.jpg" alt="Logitech wireless mouse">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>Logitech wireless mouse</p>
+                            <p style="color: red;">Sisa stok: 0</p>
+                        </div>
+                        <p class="price">Rp 889.000,-</p>
+                    </div>
+                </div>
+                <div id="items" class="item-box">
+                    <div class="item-img">
+                        <img src="products images/NVIDIA_RTX_4090_Founders_Edition_-_Verpackung_(ZMASLO).png" alt="NVIDIA RTX 4090 Founders Edition">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>NVIDIA RTX 4090 Founders Edition - Verpackung</p>
+                            <p>Sisa stok: 999</p>
+                        </div>
+                        <p class="price">Rp 40.000.000,-</p>
+                    </div>
+                </div>
+                <div id="items" class="item-box">
+                    <div class="item-img">
+                        <img src="products images/Steelseries.jpg" alt="NVIDIA RTX 4090 Founders Edition">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>APEX PRO</p>
+                            <p>Sisa stok: 100</p>
+                        </div>
+                        <p class="price">Rp 2.100.000,-</p>
+                    </div>
+                </div>
+                <div id="items" class="item-box">
+                    <div class="item-img">
+                        <img src="products images/ARCTIS NOVA 7 WIRELESS.jpg" alt="NVIDIA RTX 4090 Founders Edition">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>ARCTIS NOVA 7 WIRELESS</p>
+                            <p>Sisa stok: 300</p>
+                        </div>
+                        <p class="price">Rp 3.100.000,-</p>
+                    </div>
+                </div>
+                <div id="items" class="item-box">
+                    <div class="item-img">
+                        <img src="products images/QCK PRISM CLOTH.jpg" alt="NVIDIA RTX 4090 Founders Edition">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>QCK PRISM CLOTH</p>
+                            <p>Sisa stok: 50</p>
+                        </div>
+                        <p class="price">Rp 500.000,-</p>
+                    </div>
+                </div>
+                <div id="items" class="item-box">
+                    <div class="item-img">
+                        <img src="products images/paul-esch-laurent-a-L0mmyCqcY-unsplash.jpg" alt="Keyboard Jovitech Gaming">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>Keyboard Jovitech gaming</p>
+                            <p>Sisa stok: 5</p>
+                        </div>
+                        <p class="price">Rp 556.000,-</p>
+                    </div>
+                </div>
+                <div class="item-box">
+                    <div class="item-img">
+                        <img src="products images/Monitor MSI Optix G241VC.png" alt="Monitor MSI Optix G241">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>Monitor MSI Optix G241VC 24" Curved 75 Hz</p>
+                            <p>Sisa stok: 10</p>
+                        </div>
+                        <p class="price">Rp 2.075.000,-</p>
+                    </div>
+                </div>
+                <div class="item-box"> 
+                    <div class="item-img">
+                        <img src="products images/Corsair MM700 RGB.png" alt="Corsair MM700 RGB">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>Corsair MM700 RGB Extended</p>
+                            <p>Sisa stok: 21</p>
+                        </div>
+                        <p class="price">Rp 849.000,-</p>
+                    </div>
+                </div>
+                <div class="item-box">
+                    <div class="item-img">
+                        <img src="products images/GM500.png" alt="dbE GM 500">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>Headset dbE GM500</p>
+                            <p>Sisa stok: 43</p>
+                        </div>
+                        <p class="price">Rp 600.000,-</p>
+                    </div>
+                </div>
+                <div class="item-box">
+                    <div class="item-img">
+                        <img src="products images/Charger Samsung.jpg" alt="Charger Samsung">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>Charger Samsung Fast Charging</p>
+                            <p>Sisa stok: 59</p>
+                        </div>
+                        <p class="price">Rp 82.750,-</p>
+                    </div>
+                </div>
+                <div class="item-box">
+                    <div class="item-img">
+                        <img src="products images/Corsair power supply.jpg" alt="Corsair VS450">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>Corsair Power Supply VS450W-80plus</p>
+                            <p>Sisa stok: 9</p>
+                        </div>
+                        <p class="price">Rp 560.000,-</p>
+                    </div>
+                </div>
+                <div class="item-box">
+                    <div class="item-img">
+                        <img src="products images/macbook.png" alt="Macbook PRO 2022">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>Apple Macbook PRO 2022 M2</p>
+                            <p>Sisa stok: 3</p>
+                        </div>
+                        <p class="price">Rp 23.450.000,-</p>
+                    </div>
+                </div>
+                <div class="item-box">
+                    <div class="item-img">
+                        <img src="products images/Razer Mic.png" alt="Seiren Mini Microphone">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>Razer Seiren Mini Ultra Compact Microphone</p>
+                            <p>Sisa stok: 71</p>
+                        </div>
+                        <p class="price">Rp 814.500,-</p>
+                    </div>
+                </div>
+                <div class="item-box">
+                    <div class="item-img">
+                        <img src="products images/printer_random.jpg" alt="Seiren Mini Microphone">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>HP Smart Tank 500 AiO Printer  </p>
+                            <p>Sisa stok: 420</p>
+                        </div>
+                        <p class="price">Rp 1.999.000,-</p>
+                    </div>
+                </div>
+                <div id="items" class="item-box">
+                    <div class="item-img">
+                        <img src="products images/headset logitech pro gaming.jpg" alt="Logitech Headset Pro Gaming">
+                    </div>
+                    <div class="item-txt">
+                        <div>
+                            <p>Logitech Headset Pro Gaming</p>
+                            <p>Sisa stok: 1</p>
+                        </div>
+                        <p class="price">Rp 945.000,-</p>
+                </div>
+                </div> 
+        </section>
+    </section>
+
+    <footer id="contacts"> 
+        <div class="ftr-txt">
+            <!--Instagram-->
+            <div class="ftr-ig">
+                <div class="ftr-section">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="ftr-logo" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="white" d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3Z"/></svg>                
+                    <p>Instagram</p>
+                </div>
+                <div class="ig">
+                    <a href="https://www.instagram.com/VoltMart/" target="_blank">@VoltMart</a>
+                </div>
+            </div>
+
+            <!--Whatsapp-->
+            <div class="ftr-wa">
+                <div class="ftr-section">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="ftr-logo" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="white" d="M19.05 4.91A9.816 9.816 0 0 0 12.04 2c-5.46 0-9.91 4.45-9.91 9.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91c0-2.65-1.03-5.14-2.9-7.01zm-7.01 15.24c-1.48 0-2.93-.4-4.2-1.15l-.3-.18l-3.12.82l.83-3.04l-.2-.31a8.264 8.264 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24c2.2 0 4.27.86 5.82 2.42a8.183 8.183 0 0 1 2.41 5.83c.02 4.54-3.68 8.23-8.22 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81c-.23-.08-.39-.12-.56.12c-.17.25-.64.81-.78.97c-.14.17-.29.19-.54.06c-.25-.12-1.05-.39-1.99-1.23c-.74-.66-1.23-1.47-1.38-1.72c-.14-.25-.02-.38.11-.51c.11-.11.25-.29.37-.43s.17-.25.25-.41c.08-.17.04-.31-.02-.43s-.56-1.34-.76-1.84c-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31c-.22.25-.86.85-.86 2.07c0 1.22.89 2.4 1.01 2.56c.12.17 1.75 2.67 4.23 3.74c.59.26 1.05.41 1.41.52c.59.19 1.13.16 1.56.1c.48-.07 1.47-.6 1.67-1.18c.21-.58.21-1.07.14-1.18s-.22-.16-.47-.28z"/></svg>
+                    <p>Whatsapp</p>
+                </div>
+                <div class="wa">
+                    <div>
+                        <p></p>
+                        <p>+62 815 3492 8934</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VoltMart -->
+            <div class="ftr-company">
+                <p>Visit VoltMart at:</p>
+                <div class="company">
+                    <a href="https://voltmart.com/">voltmart.com</a>
+                    <div class="ftr-section">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="ftr-logo" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="white" d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3Z"/></svg>                
+                        <a href="https://www.instagram.com/bnccbinus/">@VoltMart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ftr-img">
+            <img src="mart.png" class="voltmart-logo">
+        </div>
+    </footer>
+    <script src="app.js"></script>
+</body>
+</html>
