@@ -1,11 +1,11 @@
 <?php
-    /*
-        $host = 'localhost'; // Assuming XAMPP, so localhost
-        $dbname = 'voltmart'; // Your database name
-        $username = 'root'; // Default XAMPP username
-        $password = ''; // Default XAMPP password is empty 
-    */
-    $con = mysqli_connect("localhost", "root", "", "databasetestingraihan");
+    
+        $host = 'sql202.infinityfree.com'; 
+        $dbname = 'if0_37638191_dbvoltmart'; 
+        $username = 'if0_37638191'; 
+        $password = 'nBvECic0QQAJ4i'; 
+    
+    $con = mysqli_connect($host, $username, $password, $dbname);
 
     if (mysqli_connect_errno()) {
         echo "Gagal konek ke database: " . mysqli_connect_error();
