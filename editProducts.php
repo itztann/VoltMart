@@ -19,7 +19,7 @@
 /*
             // Ambil data produk berdasarkan ID
             $query = "SELECT * FROM products WHERE id = ?";
-            $stmt = $conn->prepare($query);
+            $stmt = $con->prepare($query);
             $stmt->bind_param("i", $productId);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -43,7 +43,7 @@
 
                 // Update data produk di database
                 $updateQuery = "UPDATE products SET name = ?, price = ?, picture = ?, detail = ?, stock = ? WHERE id = ?";
-                $stmt = $conn->prepare($updateQuery);
+                $stmt = $con->prepare($updateQuery);
                 $stmt->bind_param("sdsssi", $name, $price, $picture, $detail, $stock, $productId);
 
                 if ($stmt->execute()) {

@@ -6,7 +6,7 @@
 
 
     
-    /*
+    
     $error = '';
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -18,7 +18,7 @@
             $error = "Please fill in all fields.";
         } else {
             // Fetch the user data by email
-            $stmt = $conn->prepare('SELECT * FROM users WHERE email = :email');
+            $stmt = $con->prepare('SELECT * FROM users WHERE email = :email');
             $stmt->execute(['email' => $email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -36,7 +36,7 @@
             }
         }
     } 
-    */
+    
 ?>
 
 <!-- Error display -->

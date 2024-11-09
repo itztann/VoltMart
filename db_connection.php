@@ -5,22 +5,20 @@
         $username = 'root'; // Default XAMPP username
         $password = ''; // Default XAMPP password is empty 
     */
-    $con = mysqli_connect("localhost", "root", "", "databasetestingraihan");
+    $con = mysqli_connect("localhost", "root", "", "voltmart");
 
     if (mysqli_connect_errno()) {
-        echo "Gagal konek ke database: " . mysqli_connect_error();
+        echo "Failed to Connect to database #EnglishBetter: " . mysqli_connect_error();
         exit();
     }
-    /*
-try {
-    // Establishing the connection
-    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    // Set the PDO error mode to exception
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    // If successful, echo a success message (you can remove this later)
-    echo "Connected successfully to the database!";
-} catch(PDOException $e) {
-    // If there's an error, it will be displayed here
-    echo "Connection failed: " . $e->getMessage();
-} */
+    
+    
+    try {
+        $con = new PDO("mysql:host=localhost;dbname=voltmart", "root", "");
+        $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch(PDOException $e) {
+        echo "Connection failed: " . $e->getMessage();
+        exit();
+    }
+    
 ?>
