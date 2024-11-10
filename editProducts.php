@@ -1,98 +1,158 @@
 <?php
-    session_start();
-?>
+    require_once 'session.php';
+    require 'db_connection.php';
 
+    // Pastikan hanya admin yang bisa mengakses halaman ini
+    if ($_SESSION['role'] !== 'admin') {
+        header('Location: index.php');
+        exit();
+    }
+
+    // Validasi ID yang diterima melalui URL
+    if (isset($_GET['a']) && is_numeric($_GET['a'])) {
+        $id = $_GET['a'];
+    } else {
+        // Redirect jika ID tidak valid atau tidak ada
+        header('Location: products.php');
+        exit();
+    }
+
+    // Ambil data produk berdasarkan ID dengan PDO untuk keamanan
+    $stmt = $con->prepare("SELECT * FROM products WHERE id = :id");
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$data) {
+        // Jika produk tidak ditemukan, redirect ke halaman produk
+        header('Location: products.php');
+        exit();
+    }
+
+    // Proses penghapusan produk
+    if (isset($_POST['deleteProduct'])) {
+        $deleteStmt = $con->prepare("DELETE FROM products WHERE id = :id");
+        $deleteStmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        if ($deleteStmt->execute()) {
+            echo "<script>alert('Product deleted successfully!'); window.location.href='products.php';</script>";
+            exit();
+        } else {
+            echo "<script>alert('Error deleting product.');</script>";
+        }
+    }
+
+    if (isset($_POST['confirmEdit'])) {
+        // Ambil input baru dan sanitasi
+        $newName = htmlspecialchars($_POST['name']);
+        $newPrice = htmlspecialchars($_POST['price']);
+        $newDetail = htmlspecialchars($_POST['detail']);
+        $newStock = htmlspecialchars($_POST['stock']);
+
+        // Handle foto produk jika diupload
+        $newPicture = $data['picture']; // Default: gunakan foto lama jika tidak ada upload baru
+
+        if (isset($_FILES['picture']) && $_FILES['picture']['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES['picture']['tmp_name'];
+            $fileName = $_FILES['picture']['name'];
+            $fileSize = $_FILES['picture']['size'];
+            $fileType = $_FILES['picture']['type'];
+
+            // Validasi tipe file dan ukuran file
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            $maxFileSize = 5 * 1024 * 1024; // Maksimum 5MB
+
+            if (!in_array($fileType, $allowedTypes)) {
+                echo "<script>alert('Only JPG, PNG, or GIF images are allowed.');</script>";
+                exit();
+            }
+
+            if ($fileSize > $maxFileSize) {
+                echo "<script>alert('File size should not exceed 5MB.');</script>";
+                exit();
+            }
+
+            // Tentukan folder tujuan untuk menyimpan gambar
+            $uploadDir = 'uploads/products/';
+            $newFileName = uniqid('product_', true) . '.' . pathinfo($fileName, PATHINFO_EXTENSION);
+            $uploadPath = $uploadDir . $newFileName;
+
+            // Cek apakah folder sudah ada, jika belum buat
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            // Pindahkan file ke direktori tujuan
+            if (move_uploaded_file($fileTmpPath, $uploadPath)) {
+                $newPicture = $newFileName; // Update dengan nama foto baru
+            } else {
+                echo "<script>alert('Error uploading the file.');</script>";
+                exit();
+            }
+        }
+
+        // Perbarui data produk dengan prepared statement untuk mencegah SQL Injection
+        $updateStmt = $con->prepare("UPDATE products SET name = :name, price = :price, detail = :detail, stock = :stock, picture = :picture WHERE id = :id");
+        $updateStmt->bindParam(':name', $newName, PDO::PARAM_STR);
+        $updateStmt->bindParam(':price', $newPrice, PDO::PARAM_INT);
+        $updateStmt->bindParam(':detail', $newDetail, PDO::PARAM_STR);
+        $updateStmt->bindParam(':stock', $newStock, PDO::PARAM_INT);
+        $updateStmt->bindParam(':picture', $newPicture, PDO::PARAM_STR);
+        $updateStmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        if ($updateStmt->execute()) {
+            echo "<script>alert('Product updated successfully!'); window.location.href='products.php';</script>";
+        } else {
+            echo "<script>alert('Error updating product.');</script>";
+        }
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>editProducts</title>
+    <link rel="stylesheet" href="editProductsStyle.css">
+    <title>Edit Product</title>
 </head>
 <body>
-    <?php
-        if ($_SESSION['role'] !== 'admin') {
-            header('Location: index.php'); // Redirect ke halaman akses terlarang
-            exit;
-        } else {
-            echo "Kamu adalah admin";
-/*
-            // Ambil data produk berdasarkan ID
-            $query = "SELECT * FROM products WHERE id = ?";
-            $stmt = $con->prepare($query);
-            $stmt->bind_param("i", $productId);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $product = $result->fetch_assoc(); */
+<div class="container">
+        <div class="old-data">
+            <h2>Old Data</h2>
+            <p><strong>Name:</strong> <?php echo htmlspecialchars($data['name']); ?></p>
+            <p><strong>Price:</strong> Rp<?php echo number_format($data['price'], 0, ',', '.'); ?></p>
+            <p><strong>Detail:</strong> <?php echo htmlspecialchars($data['detail']); ?></p>
+            <p><strong>Stock:</strong> <?php echo $data['stock']; ?></p>
 
-            // Proses pengeditan data produk
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $name = $_POST['name'];
-                $price = $_POST['price'];
-                $detail = $_POST['detail'];
-                $stock = $_POST['stock'];
-                
-                // Jika gambar baru diunggah
-                if (!empty($_FILES['picture']['name'])) {
-                    $targetDir = "uploads/";
-                    $picture = $targetDir . basename($_FILES["picture"]["name"]);
-                    move_uploaded_file($_FILES["picture"]["tmp_name"], $picture);
-                } else {
-                    $picture = $product['picture'];
-                }
-
-                // Update data produk di database
-                $updateQuery = "UPDATE products SET name = ?, price = ?, picture = ?, detail = ?, stock = ? WHERE id = ?";
-                $stmt = $con->prepare($updateQuery);
-                $stmt->bind_param("sdsssi", $name, $price, $picture, $detail, $stock, $productId);
-
-                if ($stmt->execute()) {
-                    echo "Produk berhasil diperbarui.";
-                    header("Location: product_list.php"); // Redirect ke halaman daftar produk
-                    exit;
-                } else {
-                    echo "Gagal memperbarui produk.";
-                }
-            }
-        }
-        ?>
-
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Edit Produk</title>
-        </head>
-        <body>
-            <h2>Edit Produk</h2>
-            <form action="" method="POST" enctype="multipart/form-data">
-                <label for="name">Nama Produk:</label>
-                <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($product['name']); ?>" required><br><br>
-
-                <label for="price">Harga:</label>
-                <input type="number" id="price" name="price" value="<?php echo htmlspecialchars($product['price']); ?>" required step="0.01"><br><br>
-
-                <label for="picture">Gambar:</label>
-                <input type="file" id="picture" name="picture"><br>
-                <img src="<?php echo htmlspecialchars($product['picture']); ?>" alt="Gambar Produk" width="100"><br><br>
-
-                <label for="detail">Deskripsi Produk:</label>
-                <textarea id="detail" name="detail" required><?php echo htmlspecialchars($product['detail']); ?></textarea><br><br>
-
-                <label for="stock">Stok:</label>
-                <select id="stock" name="stock" required>
-                    <option value="Ada" <?php echo ($product['stock'] == 'Ada') ? 'selected' : ''; ?>>Ada</option>
-                    <option value="Habis" <?php echo ($product['stock'] == 'Habis') ? 'selected' : ''; ?>>Habis</option>
-                </select><br><br>
-
-                <input type="submit" value="Update Produk">
+            <!-- Tombol Delete Product -->
+            <form method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                <button type="submit" name="deleteProduct" class="delete-button">Delete Product</button>
             </form>
-        </body>
-        </html>
+        </div>
 
-        
-        
-    ?>
+        <form action="" method="POST" class="edit-form" enctype="multipart/form-data">
+            <h2>Edit Data</h2>
+            <label for="name">Product Name</label>
+            <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($data['name']); ?>" required>
+
+            <label for="price">Price</label>
+            <input type="number" name="price" id="price" value="<?php echo htmlspecialchars($data['price']); ?>" required>
+
+            <label for="detail">Detail</label>
+            <input type="text" name="detail" id="detail" value="<?php echo htmlspecialchars($data['detail']); ?>" required>
+
+            <label for="stock">Stock</label>
+            <input type="number" name="stock" id="stock" value="<?php echo htmlspecialchars($data['stock']); ?>" required>
+
+            <label for="picture">Product Picture</label>
+            <input type="file" name="picture" id="picture" accept="image/*">
+
+            <button type="submit" name="confirmEdit">Confirm Edit</button>
+        </form>
+    </div>
+<div class="backButtonContainer">
+    <a href="products.php" class="backButton">Cancel</a>
+</div>
+
 </body>
 </html>

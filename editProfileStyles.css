@@ -1,0 +1,107 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(45deg, #f3a19f, #f2c94c, #36d1dc);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    max-width: 1000px;
+}
+
+.old-data {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    width: 40%; 
+    margin-right: 20px; 
+}
+
+.edit-form {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    width: 50%;
+}
+
+h2 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+input[type="text"], input[type="number"], input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #f27f0c;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #f9a826;
+}
+
+.backButtonContainer {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.backButton {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #f27f0c;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.backButton:hover {
+    background-color: #f9a826;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column; 
+        align-items: center;
+    }
+    .old-data, .edit-form {
+        width: 100%; 
+        margin-right: 0; 
+    }
+}
