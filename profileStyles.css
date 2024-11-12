@@ -1,0 +1,107 @@
+/* Tampilan untuk keseluruhan halaman */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(45deg, #f3a19f, #f2c94c, #36d1dc);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Kontainer utama profil */
+.profile-container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Gaya untuk foto profil */
+.profile-img {
+    width: 80px;  /* Ukuran foto profil lebih kecil */
+    height: 80px; /* Ukuran foto profil lebih kecil */
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Nama pengguna */
+.profile-username {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Saldo pengguna */
+.profile-balance {
+    font-size: 16px;
+    color: #f27f0c;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Email pengguna */
+.profile-email {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+/* Role pengguna */
+.profile-role {
+    font-size: 14px;
+    color: #36d1dc;
+    font-weight: bold;
+}
+
+/* Efek hover untuk elemen foto */
+.profile-photo:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.backButtonContainer {
+    position: absolute; 
+    top: 20px; 
+    left: 20px; 
+    z-index: 1000; 
+}
+
+.backButton {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #f27f0c;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.backButton:hover {
+    background-color: #f9a826;
+}
+
+.profile-picture {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Gaya untuk gambar profil lebih besar di bawah */
+.profile-img {
+    width: 120px;   /* Ukuran gambar profil lebih kecil */
+    height: 120px;  /* Ukuran gambar profil lebih kecil */
+    border-radius: 50%;
+    object-fit: cover; 
+}
