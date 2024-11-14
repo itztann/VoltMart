@@ -1,60 +1,56 @@
 <?php
-// Include the database connection
 require_once 'db_connection.php';
+?>
 
-$token = $_GET['token'] ?? '';
+<link rel="stylesheet" href="resetPasswordStyles.css">
 
-if ($token) {
-    // Check if the reset token exists in the database
-    $stmt = $con->prepare('SELECT * FROM users WHERE reset_token = :reset_token');
-    $stmt->execute(['reset_token' => $token]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+<?php
+
+if (isset($_GET['token'])) {
+    $token = htmlspecialchars($_GET['token']);
+    
+    $currentTime = time();  
+
+    $stmt = $con->prepare("SELECT * FROM users WHERE resetToken = :token AND resetTokenExpired > :current_time");
+    $stmt->bindParam(':token', $token);
+    $stmt->bindParam(':current_time', $currentTime); 
+    $stmt->execute();
+    $user = $stmt->fetch();
 
     if ($user) {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $new_password = htmlspecialchars($_POST['new_password']);
-            $confirm_password = htmlspecialchars($_POST['confirm_password']);
+            $newPassword = $_POST['newPassword'];
+            $confirmPassword = $_POST['confirmPassword'];
 
-            if ($new_password === $confirm_password) {
-                // Hash the new password
-                $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+            if ($newPassword === $confirmPassword) {
+                $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-                // Update the password in the database and clear the reset token
-                $stmt = $con->prepare('UPDATE users SET password = :password, reset_token = NULL WHERE id = :id');
-                $stmt->execute(['password' => $hashed_password, 'id' => $user['id']]);
-
-                echo "Password updated successfully! You can now <a href='login.html'>log in</a>.";
+                $stmt = $con->prepare("UPDATE users SET passwords = :password, resetToken = NULL, resetTokenExpired = NULL WHERE resetToken = :token");
+                $stmt->bindParam(':password', $hashedPassword);
+                $stmt->bindParam(':token', $token);
+                if ($stmt->execute()) {
+                    echo "Password reset successful! You can now <a href='login.php'> login </a> with your new password"; 
+                } else {
+                    echo "Error resetting password. Please try again";
+                }
             } else {
-                echo "Passwords do not match.";
+                echo "Password doesn't match! Like you and your crush";
             }
+        } else {
+            echo "
+            <form action='' method='POST'>
+                <label>Your token is active for 1 minute!<br><br>New Password:</label><br>
+                <input type='password' name='newPassword' placeholder='Enter new password' required><br><br>
+                <label>Confirm New Password:</label><br>
+                <input type='password' name='confirmPassword' placeholder='Confirm new password' required><br><br>
+                <button type='submit'>Reset Password</button>
+            </form>";
         }
     } else {
-        echo "Invalid or expired token.";
-    }
+        echo "I think your token is expired like a bread. Please go back to <a href='forgotPassword.php'>Forgot Password</a>";
+    }   
 } else {
-    echo "No token provided.";
+    echo "No token no reset!";
 }
 ?>
 
-<!-- HTML Form for Resetting the Password -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password</title>
-    <link rel="stylesheet" href="forgotPasswordStyle.css">
-</head>
-<body>
-    <h2>Reset Password</h2>
-    <form action="resetPassword.php?token=<?php echo htmlspecialchars($token); ?>" method="POST">
-        <label for="new_password">New Password:</label>
-        <input type="password" name="new_password" required>
-        
-        <label for="confirm_password">Confirm Password:</label>
-        <input type="password" name="confirm_password" required>
-        
-        <button type="submit">Update Password</button>
-    </form>
-</body>
-</html>

@@ -2,19 +2,25 @@
 require_once 'session.php';
 require_once 'db_connection.php';
 
-// Pastikan hanya admin yang bisa mengakses halaman ini
+if (empty($_SESSION['csrfToken'])) {
+    $_SESSION['csrfToken'] = bin2hex(random_bytes(32));
+}
+
 if ($_SESSION['role'] !== 'admin') {
     header('Location: index.php');
     exit();
 }
 
-// Ambil semua data user dari tabel "users"
 $stmt = $con->prepare("SELECT * FROM users");
 $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Proses pengeditan data user
 if (isset($_POST['editUser'])) {
+    if (!isset($_POST['csrfToken']) || $_POST['csrfToken'] !== $_SESSION['csrfToken']) {
+        echo "<script>alert('Invalid CSRF token!');</script>";
+        exit();
+    }
+
     $userId = $_POST['user_id'];
     $newUsername = htmlspecialchars($_POST['username']);
     $newRole = htmlspecialchars($_POST['role']);
@@ -33,8 +39,12 @@ if (isset($_POST['editUser'])) {
     }
 }
 
-// Proses penghapusan user
 if (isset($_POST['deleteUser'])) {
+    if (!isset($_POST['csrfToken']) || $_POST['csrfToken'] !== $_SESSION['csrfToken']) {
+        echo "<script>alert('Invalid CSRF token!');</script>";
+        exit();
+    }
+
     $userId = $_POST['user_id'];
 
     $deleteStmt = $con->prepare("DELETE FROM users WHERE id = :id");
@@ -85,6 +95,8 @@ if (isset($_POST['deleteUser'])) {
                     </td>
                     <td><input type="number" name="balance" value="<?php echo htmlspecialchars($user['balance']); ?>"></td>
                     <td>
+                        <input type="hidden" name="csrfToken" value="<?php echo $_SESSION['csrfToken']; ?>">
+
                         <button type="submit" name="editUser">Confirm edit</button>
                         <button type="submit" name="deleteUser" onclick="return confirm('Are you sure you want to delete this user?')">Delete account</button>
                     </td>

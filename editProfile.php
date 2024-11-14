@@ -2,6 +2,10 @@
 require_once 'session.php';
 require_once 'db_connection.php';
 
+if (empty($_SESSION['csrfToken'])) {
+    $_SESSION['csrfToken'] = bin2hex(random_bytes(32));
+}
+
 if (!isset($_SESSION['username'])) {
     header('Location: login.php');
     exit();
@@ -20,22 +24,29 @@ if (!$userData) {
 }
 
 if (isset($_POST['confirmEdit'])) {
+    if (!isset($_POST['csrfToken']) || $_POST['csrfToken'] !== $_SESSION['csrfToken']) {
+        echo "<script>alert('Invalid CSRF token!');</script>";
+        exit();
+    }
+
     $newName = htmlspecialchars($_POST['name']);
     $newPhoto = $_FILES['photo'];  
+    $securityQuestion = htmlspecialchars($_POST['securityQuestion']);
+    $securityAnswer = htmlspecialchars($_POST['securityAnswer']);
 
     if ($newPhoto['name']) {
         $targetDir = "uploads/profile_pictures/";  
         $targetFile = $targetDir . basename($newPhoto["name"]);
         $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
-        $validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        $validExtensions = ['jpg', 'jpeg', 'png'];
         if (!in_array($imageFileType, $validExtensions)) {
-            echo "<script>alert('Only JPG, JPEG, PNG & GIF files are allowed.');</script>";
+            echo "<script>alert('Only JPG, JPEG, or PNG files are allowed.');</script>";
             exit();
         }
 
-        if ($newPhoto["size"] > 2 * 1024 * 1024) {  // 2MB
-            echo "<script>alert('File is too large. Maximum size is 2MB.');</script>";
+        if ($newPhoto["size"] > 10 * 1024 * 1024) {  
+            echo "<script>alert('File is too large. Maximum size is 10MB.');</script>";
             exit();
         }
 
@@ -50,9 +61,11 @@ if (isset($_POST['confirmEdit'])) {
         $photoPath = $userData['picture'];  
     }
 
-    $updateStmt = $con->prepare("UPDATE users SET username = :username, picture = :picture WHERE username = :currentUsername");
+    $updateStmt = $con->prepare("UPDATE users SET username = :username, picture = :picture, securityQuestion = :securityQuestion, securityAnswer = :securityAnswer WHERE username = :currentUsername");
     $updateStmt->bindParam(':username', $newName, PDO::PARAM_STR);
     $updateStmt->bindParam(':picture', $photoPath, PDO::PARAM_STR);
+    $updateStmt->bindParam(':securityQuestion', $securityQuestion, PDO::PARAM_STR);
+    $updateStmt->bindParam(':securityAnswer', password_hash($securityAnswer, PASSWORD_DEFAULT), PDO::PARAM_STR);
     $updateStmt->bindParam(':currentUsername', $username, PDO::PARAM_STR);
     $updateStmt->execute();
 
@@ -84,13 +97,21 @@ if (isset($_POST['confirmEdit'])) {
     <form action="" method="POST" class="edit-form" enctype="multipart/form-data">
         <h2>Edit Data</h2>
         <label for="name">Username:</label>
-        <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($userData['username']); ?>">
+        <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($userData['username']); ?>" required>
 
         <label for="photo">Profile Picture:</label>
         <input type="file" id="photo" name="photo" accept="image/*">
 
+        <label for="securityQuestion">Security Question:</label>
+        <input type="text" id="securityQuestion" name="securityQuestion" value="<?php echo htmlspecialchars($userData['securityQuestion']); ?>" required>
+
+        <label for="securityAnswer">Security Answer:</label>
+        <input type="text" id="securityAnswer" name="securityAnswer" required>
+
         <label for="password">Password:</label>
         <a href="resetPassword.php">Change Password</a>
+
+        <input type="hidden" name="csrfToken" value="<?php echo $_SESSION['csrfToken']; ?>">
 
         <button type="submit" name="confirmEdit">Confirm Edit</button>
     </form>

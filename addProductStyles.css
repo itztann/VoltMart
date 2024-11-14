@@ -28,9 +28,7 @@ label {
     text-align: left;
 }
 
-input[type="text"],
-input[type="number"],
-textarea {
+input[type="text"], input[type="number"], textarea {
     width: 100%;
     padding: 8px;
     margin-top: 5px;

@@ -1,8 +1,5 @@
-// console.log("Hi");
-
 const sideBtn = document.querySelector('.hamburger-menu');
 const sideBack = document.querySelector('#sidebar-back');
-// const sideLink = document.querySelectorAll('.sidebar-links > a')
 
 let btnOpen = false;
 sideBtn.addEventListener('click', () => {
@@ -12,12 +9,6 @@ sideBtn.addEventListener('click', () => {
 
         document.querySelector('nav').classList.add('open');
     } 
-    // else {
-    //     sideBtn.classList.remove('open');
-    //     btnOpen = false;
-        
-    //     document.querySelector('nav').classList.remove('open');
-    // }
 });
 
 sideBack.addEventListener('click', () => {
@@ -29,15 +20,6 @@ sideBack.addEventListener('click', () => {
     }
 })
 
-
-// sideLink.addEventListener('click', () => {
-//     if (btnOpen) {
-//         sideBtn.classList.remove('open');
-//         btnOpen = false;
-        
-//         document.querySelector('nav').classList.remove('open');
-//     }
-// })
 var counter = 1;
       setInterval(function(){
         document.getElementById('radio' + counter).checked = true;
@@ -74,19 +56,7 @@ const cartButton = document.getElementsByClassName("cart");
 const logoutButton = document.getElementsByClassName("exit");
 const deadLinks = document.querySelectorAll(".dead-links");
 
-/*
-loginButton[0].addEventListener('click',() => {
-    // console.log("Login Clicked");
-    alert("Feature Coming Soon");
-});
-
-signupButton[0].addEventListener('click',() => {
-    // console.log("Sign Up Clicked");
-    alert("Feature Coming Soon");
-}); */
-
 cartButton[0].addEventListener('click',() => {
-    // console.log("Cart Clicked");
     alert("Feature Coming Soon");
 });
 
@@ -95,7 +65,6 @@ logoutButton[0].addEventListener('click',() => {
 });
 
 for (let i = 0; i < deadLinks.length; i++) {
-    // const element = deadLinks[i];
     deadLinks[i].addEventListener('click',() => {
         console.log("clicked");
         alert("Feature Coming Soon");

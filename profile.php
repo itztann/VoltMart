@@ -8,7 +8,7 @@ if (!isset($_SESSION['username'])) {
 }
 
 $username = $_SESSION['username'];
-$role = $_SESSION['role']; // Ambil role dari session
+$role = $_SESSION['role']; 
 
 $stmt = $con->prepare("SELECT * FROM users WHERE username = :username");
 $stmt->bindParam(':username', $username, PDO::PARAM_STR);
@@ -46,7 +46,6 @@ if (!$userData) {
 
         <a href="editProfile.php" class="editButton">Edit Profile</a>
 
-        <!-- Tombol hanya untuk admin -->
         <?php if ($role === 'admin') { ?>
             <a href="editUserData.php" class="admin-edit-button">Edit all user data</a>
         <?php } ?>

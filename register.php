@@ -1,5 +1,10 @@
 <?php
 require_once 'db_connection.php'; 
+
+session_start();
+if (!isset($_SESSION['csrfToken'])) {
+    $_SESSION['csrfToken'] = bin2hex(random_bytes(32));
+}
 ?>
 
 <!DOCTYPE html>
@@ -18,8 +23,19 @@ require_once 'db_connection.php';
         <label for="password">Password:</label>
         <input type="password" name="password" placeholder="Password" required><br><br>
 
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" required><br><br>
+
         <label for="email">Email:</label>
-        <input type="email" name="email" placeholder="Please use your real life email (for forgot password)" required><br><br>
+        <input type="email" name="email" placeholder="Email" required><br><br>
+
+        <label for="securityQuestion">Your Security Question (Optional):</label>
+        <input type="text" name="securityQuestion" placeholder="Example: your first pet's name?"><br><br>
+
+        <label for="securityAnswer">Your Security Answer (Optional):</label>
+        <input type="text" name="securityAnswer" placeholder="Please remember the answer"><br><br>
+
+        <input type="hidden" name="csrfToken" value="<?php echo htmlspecialchars($_SESSION['csrfToken']); ?>">
 
         <button type="submit" name="registerButton">Register</button>
         <button type="button" class="loginButton" onclick="location.href='login.php'">Already have an account? Login here</button>
@@ -27,15 +43,23 @@ require_once 'db_connection.php';
 
     <?php
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Mengambil input dan memastikan tidak ada karakter berbahaya
+            if (!isset($_POST['csrfToken']) || $_POST['csrfToken'] !== $_SESSION['csrfToken']) {
+                echo "<script>alert('Invalid CSRF token!');</script>";
+                exit();
+            }
+
             $username = htmlspecialchars($_POST['username']);
             $password = $_POST['password'];
+            $confirmPassword = $_POST['confirmPassword'];
             $email = htmlspecialchars($_POST['email']);
+            $securityQuestion = !empty($_POST['securityQuestion']) ? htmlspecialchars($_POST['securityQuestion']) : null;
+            $securityAnswer = !empty($_POST['securityAnswer']) ? password_hash($_POST['securityAnswer'], PASSWORD_DEFAULT) : null;
 
-            if (empty($username) || empty($password) || empty($email)) {
-                echo "Username, password, dan email harus diisi!";
+            if ($password !== $confirmPassword) {
+                echo "<script>alert('Passwords do not match!');</script>";
+            } elseif (!preg_match("/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/", $password)) {
+                echo "<script>alert('Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.');</script>";
             } else {
-                // Mengecek apakah username atau email sudah terdaftar
                 $stmt = $con->prepare("SELECT * FROM users WHERE username = :username OR email = :email");
                 $stmt->bindParam(':username', $username);
                 $stmt->bindParam(':email', $email);
@@ -43,23 +67,22 @@ require_once 'db_connection.php';
                 $countdata = $stmt->rowCount();
 
                 if ($countdata > 0) {
-                    echo "Username or email already registered!";
+                    echo "<script>alert('Username or email already registered!');</script>";
                 } else {
-                    // Hashing password menggunakan password_hash
                     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-                    // Menyimpan data pengguna baru
-                    $query = $con->prepare("INSERT INTO users (username, passwords, email) VALUES (:username, :password, :email)");
+                    $query = $con->prepare("INSERT INTO users (username, passwords, email, securityQuestion, securityAnswer) VALUES (:username, :password, :email, :securityQuestion, :securityAnswer)");
                     $query->bindParam(':username', $username);
                     $query->bindParam(':password', $hashed_password);
                     $query->bindParam(':email', $email);
+                    $query->bindParam(':securityQuestion', $securityQuestion);
+                    $query->bindParam(':securityAnswer', $securityAnswer);
 
                     if ($query->execute()) {
-                        echo "Pendaftaran berhasil! Silakan login.";
+                        echo "<script>alert('Account registration successfull');</script>";
                         header('Location: login.php');
                         exit();
                     } else {
-                        echo "Terjadi kesalahan, coba lagi.";
+                        echo "<script>alert('Error! Please try again!');</script>";
                     }
                 }
             }

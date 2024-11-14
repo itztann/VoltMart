@@ -2,24 +2,27 @@
 require_once 'session.php';
 require 'db_connection.php';
 
-// Cek apakah user adalah admin
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: index.php');
     exit();
 }
 
-// Inisialisasi pesan kesalahan
-$error = '';
-$success = '';
+if (empty($_SESSION['csrfToken'])) {
+    $_SESSION['csrfToken'] = bin2hex(random_bytes(32));
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrfToken']) || $_POST['csrfToken'] !== $_SESSION['csrfToken']) {
+        echo "<script>alert('Invalid CSRF token!');</script>";
+        exit();
+    }
+
     $name = trim($_POST['name']);
     $price = trim($_POST['price']);
     $detail = trim($_POST['detail']);
     $stock = trim($_POST['stock']);
     $picture = '';
 
-    // Cek jika ada produk dengan nama yang sama
     $stmt = $con->prepare("SELECT * FROM products WHERE name = :name");
     $stmt->bindParam(':name', $name, PDO::PARAM_STR);
     $stmt->execute();
@@ -27,17 +30,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->rowCount() > 0) {
         $error = 'Product name already exists. Please choose a different name.';
     } else {
-        // Upload gambar
         if (isset($_FILES['picture']) && $_FILES['picture']['error'] == 0) {
             $target_dir = "uploads/products/";
             $target_file = $target_dir . basename($_FILES["picture"]["name"]);
             $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-            $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+            $allowedTypes = ['jpg', 'jpeg', 'png'];
             
-            // Cek tipe file
             if (!in_array($imageFileType, $allowedTypes)) {
-                $error = "Only JPG, JPEG, PNG & GIF files are allowed.";
+                $error = "Only JPG, JPEG, & PNG files are allowed.";
             } else {
+                if ($newPhoto["size"] > 10 * 1024 * 1024) {
+                    echo "<script>alert('File is too large. Maximum size is 10MB.');</script>";
+                    exit();
+                }
+                
                 if (move_uploaded_file($_FILES["picture"]["tmp_name"], $target_file)) {
                     $picture = $target_file;
                 } else {
@@ -46,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Jika tidak ada error, tambahkan produk ke database
         if (empty($error)) {
             $stmt = $con->prepare("INSERT INTO products (name, price, detail, picture, stock) VALUES (:name, :price, :detail, :picture, :stock)");
             $stmt->bindParam(':name', $name);
@@ -95,6 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <label for="stock">Stock:</label>
             <input type="number" id="stock" name="stock" required>
+
+            <input type="hidden" name="csrfToken" value="<?php echo $_SESSION['csrfToken']; ?>">
 
             <button type="submit">Add Product</button>
         </form>

@@ -2,35 +2,38 @@
     require_once 'session.php';
     require 'db_connection.php';
 
-    // Pastikan hanya admin yang bisa mengakses halaman ini
+    if (empty($_SESSION['csrfToken'])) {
+        $_SESSION['csrfToken'] = bin2hex(random_bytes(32));
+    }
+
     if ($_SESSION['role'] !== 'admin') {
         header('Location: index.php');
         exit();
     }
 
-    // Validasi ID yang diterima melalui URL
     if (isset($_GET['a']) && is_numeric($_GET['a'])) {
         $id = $_GET['a'];
     } else {
-        // Redirect jika ID tidak valid atau tidak ada
         header('Location: products.php');
         exit();
     }
 
-    // Ambil data produk berdasarkan ID dengan PDO untuk keamanan
     $stmt = $con->prepare("SELECT * FROM products WHERE id = :id");
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$data) {
-        // Jika produk tidak ditemukan, redirect ke halaman produk
         header('Location: products.php');
         exit();
     }
 
-    // Proses penghapusan produk
     if (isset($_POST['deleteProduct'])) {
+        if (!isset($_POST['csrfToken']) || $_POST['csrfToken'] !== $_SESSION['csrfToken']) {
+            echo "<script>alert('Invalid CSRF token!');</script>";
+            exit();
+        }
+
         $deleteStmt = $con->prepare("DELETE FROM products WHERE id = :id");
         $deleteStmt->bindParam(':id', $id, PDO::PARAM_INT);
 
@@ -43,14 +46,17 @@
     }
 
     if (isset($_POST['confirmEdit'])) {
-        // Ambil input baru dan sanitasi
+        if (!isset($_POST['csrfToken']) || $_POST['csrfToken'] !== $_SESSION['csrfToken']) {
+            echo "<script>alert('Invalid CSRF token!');</script>";
+            exit();
+        }
+        
         $newName = htmlspecialchars($_POST['name']);
         $newPrice = htmlspecialchars($_POST['price']);
         $newDetail = htmlspecialchars($_POST['detail']);
         $newStock = htmlspecialchars($_POST['stock']);
 
-        // Handle foto produk jika diupload
-        $newPicture = $data['picture']; // Default: gunakan foto lama jika tidak ada upload baru
+        $newPicture = $data['picture']; 
 
         if (isset($_FILES['picture']) && $_FILES['picture']['error'] === UPLOAD_ERR_OK) {
             $fileTmpPath = $_FILES['picture']['tmp_name'];
@@ -58,40 +64,35 @@
             $fileSize = $_FILES['picture']['size'];
             $fileType = $_FILES['picture']['type'];
 
-            // Validasi tipe file dan ukuran file
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-            $maxFileSize = 5 * 1024 * 1024; // Maksimum 5MB
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            $maxFileSize = 10 * 1024 * 1024; 
 
             if (!in_array($fileType, $allowedTypes)) {
-                echo "<script>alert('Only JPG, PNG, or GIF images are allowed.');</script>";
+                echo "<script>alert('Only JPG, or PNG images are allowed.');</script>";
                 exit();
             }
 
             if ($fileSize > $maxFileSize) {
-                echo "<script>alert('File size should not exceed 5MB.');</script>";
+                echo "<script>alert('File size should not exceed 10MB.');</script>";
                 exit();
             }
 
-            // Tentukan folder tujuan untuk menyimpan gambar
             $uploadDir = 'uploads/products/';
             $newFileName = uniqid('product_', true) . '.' . pathinfo($fileName, PATHINFO_EXTENSION);
             $uploadPath = $uploadDir . $newFileName;
 
-            // Cek apakah folder sudah ada, jika belum buat
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0755, true);
             }
 
-            // Pindahkan file ke direktori tujuan
             if (move_uploaded_file($fileTmpPath, $uploadPath)) {
-                $newPicture = $newFileName; // Update dengan nama foto baru
+                $newPicture = $newFileName; 
             } else {
                 echo "<script>alert('Error uploading the file.');</script>";
                 exit();
             }
         }
 
-        // Perbarui data produk dengan prepared statement untuk mencegah SQL Injection
         $updateStmt = $con->prepare("UPDATE products SET name = :name, price = :price, detail = :detail, stock = :stock, picture = :picture WHERE id = :id");
         $updateStmt->bindParam(':name', $newName, PDO::PARAM_STR);
         $updateStmt->bindParam(':price', $newPrice, PDO::PARAM_INT);
@@ -124,7 +125,6 @@
             <p><strong>Detail:</strong> <?php echo htmlspecialchars($data['detail']); ?></p>
             <p><strong>Stock:</strong> <?php echo $data['stock']; ?></p>
 
-            <!-- Tombol Delete Product -->
             <form method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
                 <button type="submit" name="deleteProduct" class="delete-button">Delete Product</button>
             </form>
@@ -146,6 +146,8 @@
 
             <label for="picture">Product Picture</label>
             <input type="file" name="picture" id="picture" accept="image/*">
+
+            <input type="hidden" name="csrfToken" value="<?php echo $_SESSION['csrfToken']; ?>">
 
             <button type="submit" name="confirmEdit">Confirm Edit</button>
         </form>
