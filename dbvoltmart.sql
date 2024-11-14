@@ -59,7 +59,7 @@ CREATE TABLE `users` (
   `passwords` varchar(255) DEFAULT NULL,
   `email` varchar(30) NOT NULL,
   `role` enum('admin','user') NOT NULL DEFAULT 'user',
-  `balance` int(11) NOT NULL DEFAULT 10000,
+  `balance` int(11) NOT NULL DEFAULT 10000000,
   `picture` varchar(255) DEFAULT NULL,
   `securityQuestion` text DEFAULT NULL,
   `securityAnswer` text DEFAULT NULL,
