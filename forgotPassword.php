@@ -1,5 +1,12 @@
 <?php
-require_once 'db_connection.php'; 
+    require_once 'db_connection.php'; 
+    session_set_cookie_params([
+        'lifetime' => 0, 
+        'secure' => true, 
+        'httponly' => true, 
+        'samesite' => 'Strict', 
+    ]);
+    session_start();
 ?>
 
 <link rel="stylesheet" href="forgotPasswordStyle.css">

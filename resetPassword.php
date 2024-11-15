@@ -1,5 +1,12 @@
 <?php
-require_once 'db_connection.php';
+    require_once 'db_connection.php';
+    session_set_cookie_params([
+        'lifetime' => 0, 
+        'secure' => true, 
+        'httponly' => true, 
+        'samesite' => 'Strict', 
+    ]);
+    session_start();
 ?>
 
 <link rel="stylesheet" href="resetPasswordStyles.css">
@@ -22,7 +29,11 @@ if (isset($_GET['token'])) {
             $newPassword = $_POST['newPassword'];
             $confirmPassword = $_POST['confirmPassword'];
 
-            if ($newPassword === $confirmPassword) {
+            if (!preg_match("/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/", $newPassword)) {
+                echo "<script>alert('Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.');</script>";
+            } elseif ($newPassword !== $confirmPassword) {
+                echo "<script>alert('Password doesn't match! Like you and your crush');</script>";
+            } else {
                 $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
                 $stmt = $con->prepare("UPDATE users SET passwords = :password, resetToken = NULL, resetTokenExpired = NULL WHERE resetToken = :token");
@@ -31,10 +42,8 @@ if (isset($_GET['token'])) {
                 if ($stmt->execute()) {
                     echo "Password reset successful! You can now <a href='login.php'> login </a> with your new password"; 
                 } else {
-                    echo "Error resetting password. Please try again";
+                    echo "Error resetting password. Please try again.";
                 }
-            } else {
-                echo "Password doesn't match! Like you and your crush";
             }
         } else {
             echo "
@@ -53,4 +62,3 @@ if (isset($_GET['token'])) {
     echo "No token no reset!";
 }
 ?>
-

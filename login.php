@@ -1,4 +1,11 @@
 <?php
+session_set_cookie_params([
+    'lifetime' => 0, 
+    'secure' => true, 
+    'httponly' => true, 
+    'samesite' => 'Strict', 
+]);
+
 session_start();
 require 'db_connection.php';
 
@@ -80,6 +87,7 @@ if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_ATT
                 
                 unset($_SESSION['login_attempts']);
                 unset($_SESSION['last_attempt_time']);
+                session_regenerate_id(true);
                 
                 header('Location: index.php');
                 exit();

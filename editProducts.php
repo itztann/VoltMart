@@ -1,4 +1,11 @@
 <?php
+    session_set_cookie_params([
+        'lifetime' => 0, 
+        'secure' => true, 
+        'httponly' => true, 
+        'samesite' => 'Strict', 
+    ]);
+    
     require_once 'session.php';
     require 'db_connection.php';
 
@@ -101,6 +108,7 @@
         $updateStmt->bindParam(':picture', $newPicture, PDO::PARAM_STR);
         $updateStmt->bindParam(':id', $id, PDO::PARAM_INT);
 
+        session_regenerate_id(true);
         if ($updateStmt->execute()) {
             echo "<script>alert('Product updated successfully!'); window.location.href='products.php';</script>";
         } else {

@@ -29,13 +29,13 @@ if (!isset($_SESSION['csrfToken'])) {
         <label for="email">Email:</label>
         <input type="email" name="email" placeholder="Email" required><br><br>
 
-        <label for="securityQuestion">Your Security Question (Optional):</label>
+        <label for="securityQuestion">Your Personal Security Question (Optional):</label>
         <input type="text" name="securityQuestion" placeholder="Example: your first pet's name?"><br><br>
 
         <label for="securityAnswer">Your Security Answer (Optional):</label>
         <input type="text" name="securityAnswer" placeholder="Please remember the answer"><br><br>
 
-        <input type="hidden" name="csrfToken" value="<?php echo htmlspecialchars($_SESSION['csrfToken']); ?>">
+        <input type="hidden" name="csrfToken" value="<?php echo htmlspecialchars($_SESSION['csrfToken'], ENT_QUOTES, 'UTF-8'); ?>">
 
         <button type="submit" name="registerButton">Register</button>
         <button type="button" class="loginButton" onclick="location.href='login.php'">Already have an account? Login here</button>
@@ -48,11 +48,11 @@ if (!isset($_SESSION['csrfToken'])) {
                 exit();
             }
 
-            $username = htmlspecialchars($_POST['username']);
+            $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
             $password = $_POST['password'];
             $confirmPassword = $_POST['confirmPassword'];
-            $email = htmlspecialchars($_POST['email']);
-            $securityQuestion = !empty($_POST['securityQuestion']) ? htmlspecialchars($_POST['securityQuestion']) : null;
+            $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
+            $securityQuestion = !empty($_POST['securityQuestion']) ? htmlspecialchars($_POST['securityQuestion'], ENT_QUOTES, 'UTF-8') : null;
             $securityAnswer = !empty($_POST['securityAnswer']) ? password_hash($_POST['securityAnswer'], PASSWORD_DEFAULT) : null;
 
             if ($password !== $confirmPassword) {

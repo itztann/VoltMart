@@ -1,4 +1,11 @@
 <?php
+    session_set_cookie_params([
+        'lifetime' => 0, 
+        'secure' => true, 
+        'httponly' => true, 
+        'samesite' => 'Strict', 
+    ]);
+    
     require_once 'session.php';
     require_once 'db_connection.php';
     $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Guest';

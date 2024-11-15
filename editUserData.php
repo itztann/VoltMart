@@ -1,4 +1,11 @@
 <?php
+session_set_cookie_params([
+    'lifetime' => 0, 
+    'secure' => true, 
+    'httponly' => true, 
+    'samesite' => 'Strict', 
+]);
+
 require_once 'session.php';
 require_once 'db_connection.php';
 
@@ -32,6 +39,7 @@ if (isset($_POST['editUser'])) {
     $updateStmt->bindParam(':balance', $newBalance, PDO::PARAM_INT);
     $updateStmt->bindParam(':id', $userId, PDO::PARAM_INT);
 
+    session_regenerate_id(true);
     if ($updateStmt->execute()) {
         echo "<script>alert('User data updated successfully!'); window.location.href='editUserData.php';</script>";
     } else {
